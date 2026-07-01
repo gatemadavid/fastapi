@@ -1,0 +1,46 @@
+# Python Byte-Compiled Files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Environment Variables & Secrets
+.env
+.env.[a-zA-Z]*
+!.env.example
+*.env
+
+# Local Databases (SQLite)
+*.sqlite
+*.sqlite3
+*.db
+
+# FastAPI Cloud & Specific Build Artifacts
+.fastapicloudignore
+dist/
+build/
+*.egg-info/
+
+# Testing & Coverage
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# IDEs & Code Editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Operating System Files
+.DS_Store
+Thumbs.db
