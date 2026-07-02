@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
+<h1 class="mb-4">Posts by {{ posts.username }}</h1>
 <div id="postsContainer">
     {% for post in posts %}
     <article class="content-section py-3 px-4 mb-4">
@@ -19,6 +20,8 @@
             </div>
         </div>
     </article>
+    {% else %}
+    <p class="text-body-secondary">No posts by this user yet.</p>
     {% endfor %}
 </div>
 {% if has_more %}
@@ -27,3 +30,8 @@
 </div>
 {% endif %}
 {% endblock content %}
+{% block scripts %}
+<script type="module">
+
+</script>
+{% endblock scripts %}
