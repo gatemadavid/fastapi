@@ -44,3 +44,4 @@ htmlcov/
 # Operating System Files
 .DS_Store
 Thumbs.db
+*main.cpython-313.pyc
