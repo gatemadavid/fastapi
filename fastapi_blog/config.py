@@ -9,5 +9,6 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     max_upload_size: int = 5 * 1024 * 1024  # 5 MB
+    posts_per_page: int = 10
 
 settings = Settings()   

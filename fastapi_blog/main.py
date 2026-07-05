@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.exceptions import HTTPException as StarletteHTTPException 
 
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 import models
@@ -15,6 +15,7 @@ from database import Base, engine, get_db
 from typing import Annotated
 
 from routers import users, posts
+from config import settings
 
 
 
@@ -42,11 +43,22 @@ app.include_router(posts.router, prefix="/api/posts", tags=["Posts"])
 @app.get("/", include_in_schema=False, name="home")
 @app.get("/posts", include_in_schema=False, name="posts")
 async def home(request: Request, db: Annotated[AsyncSession, Depends(get_db)]):
+    count= await db.execute(select(func.count()).select_from(models.Post))
+    total = count.scalar() or 0
+
     result = await db.execute(select(models.Post)
                               .options(selectinload(models.Post.author))
-                              .order_by(models.Post.date_posted.desc()))
+                              .order_by(models.Post.date_posted.desc())
+                              .limit(settings.posts_per_page)
+                              )
+
+    
     posts = result.scalars().all()
-    return templates.TemplateResponse(request,"home.html", {"posts": posts, "title": "Home"})
+    has_more = total > len(posts)
+    return templates.TemplateResponse(request,"home.html", {"posts": posts, 
+                                                            "title": "Home",                                                                                                                
+                                                            "limit": settings.posts_per_page,
+                                                            "has_more": has_more})
 
 @app.get("/posts/{post_id}", include_in_schema=False, name="post")
 async def post_page(request: Request, post_id: int, db: Annotated[AsyncSession, Depends(get_db)]):
