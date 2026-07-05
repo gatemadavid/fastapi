@@ -63,7 +63,8 @@
                         <div id="loggedInNav" class="d-none">
                             <button class="btn btn-outline-light mb-2 mb-md-0 me-md-2" type="button"
                                 data-bs-toggle="modal" data-bs-target="#createPostModal">New Post</button>
-                            <a class="btn btn-light mb-2 mb-md-0 me-md-3" href="" id="accountBtn">Account</a>
+                            <a class="btn btn-light mb-2 mb-md-0 me-md-3" href="{{ url_for('account') }}"
+                                id="accountBtn">Account</a>
                         </div>
                         <!-- Shown when logged out -->
                         <div id="loggedOutNav">
@@ -220,6 +221,8 @@
         // Initialize
         setTheme(localStorage.getItem('theme') || 'auto');
     </script>
+
+
     <!-- Auth State Management -->
     <script type="module">
         import { getCurrentUser } from '/static/js/auth.js';
@@ -245,6 +248,8 @@
 
         updateAuthUI();
     </script>
+
+
     <!-- Create Post Form Handler -->
     <script type="module">
         import {
@@ -260,19 +265,15 @@
             // Stop default form submission - we'll handle it with JavaScript
             event.preventDefault();
 
-            // const token = getToken();
-            // if (!token) {
-            //     window.location.href = '/login';
-            //     return;
-            // }
+            const token = getToken();
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
 
             // Gather form values into a plain object {title: "...", content: "..."}
             const formData = new FormData(createForm);
             const postData = Object.fromEntries(formData.entries());
-
-            postData.user_id = 2; // Hardcoded user_id for now, replace with actual user ID from auth context
-
-
 
             try {
                 // POST to our API as JSON
@@ -280,15 +281,15 @@
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        // "Authorization": `Bearer ${token}`
+                        "Authorization": `Bearer ${token}`
                     },
                     body: JSON.stringify(postData),
                 });
 
-                // if (response.status === 401) {
-                //     window.location.href = '/login';
-                //     return;
-                // }
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
 
                 if (response.ok) {
                     const data = await response.json();
